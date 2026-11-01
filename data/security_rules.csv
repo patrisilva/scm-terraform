@@ -1,2 +1,0 @@
-name,description,action,position,from,to,source,destination,category,application,service,source_user,log_end
-allow-web-access,Allow web access to the internal app,allow,pre,trust,untrust,any,tf-demo-address-group,any,web-browsing,tf-demo-service-tcp,any,true

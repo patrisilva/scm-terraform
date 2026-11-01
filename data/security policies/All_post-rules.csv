@@ -1,0 +1,2 @@
+name,description,action,from,to,source,destination,category,application,service,source_user,URL Category,profile_group,log_end,disabled
+#default-deny-all_v2,Default deny action for the All folder,drop,any,any,any,any,any,any,any,any,any,best-practice,true,false

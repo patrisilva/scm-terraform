@@ -1,2 +1,0 @@
-name,description,action,position,relative_position,target_rule,from,to,source,destination,category,application,service,source_user,log_end,disabled,policy_type
-allow-outbound-dns,Allow outbound DNS to public resolvers,allow,pre,,,trust,untrust,tf-demo-address-group,any,any,dns,tf-demo-service-udp,any,true,false,Security

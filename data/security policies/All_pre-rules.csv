@@ -1,0 +1,2 @@
+name,description,action,from,to,source,destination,category,application,service,source_user,URL Category,profile_group,log_end,disabled
+#allow-all-user,Allow user access in the All folder,allow,trust,untrust,corp-user-subnet,corp-web-tier,any,web-browsing,dns,any,any,best-practice,true,false

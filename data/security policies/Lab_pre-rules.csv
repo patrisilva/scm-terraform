@@ -1,0 +1,2 @@
+name,description,action,from,to,source,destination,category,application,service,source_user,URL Category,profile_group,log_end,disabled
+#allow-lab-validation,Allow lab validation traffic in the Lab folder,allow,trust,lab,corp-lab-subnet,corp-lab-hosts,any,any,any,any,any,best-practice,true,false

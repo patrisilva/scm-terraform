@@ -8,7 +8,33 @@ This workspace provisions a tenant-safe SCM object inventory using the Palo Alto
 - service objects
 - service groups
 
-Security policy and rule resources have been intentionally excluded from the active project because SCM tenant validation is stricter than a generic starter configuration and requires real zone names, policy types, and valid object references.
+Security policy imports are now supported through a flat file naming model under `data/security policies`. Each SCM folder gets a pair of files named `Folder_pre-rules.csv` and `Folder_post-rules.csv`, which makes the tenant structure easier to manage and easier to scan.
+
+Example hierarchy:
+
+```text
+data/
+  objects/
+    addresses.csv
+    tags.csv
+  object_groups/
+    address_groups.csv
+  services/
+    services.csv
+  service_groups/
+    service_groups.csv
+  security policies/
+    Global_pre-rules.csv
+    Global_post-rules.csv
+    All_pre-rules.csv
+    All_post-rules.csv
+    FNM_pre-rules.csv
+    FNM_post-rules.csv
+    Lab_pre-rules.csv
+    Lab_post-rules.csv
+```
+
+This keeps the rule files aligned to the actual tenant folders: Global, All, FNM, and Lab, while keeping inventory objects grouped by type.
 
 ## Supported object types
 
@@ -16,7 +42,7 @@ The project is driven from CSV files in the `data/` directory and is assembled i
 
 ### 1. Tag objects
 
-The `data/tags.csv` file creates SCM tag objects that can be used to classify address objects and other inventory entries.
+The `data/objects/tags.csv` file creates SCM tag objects that can be used to classify address objects and other inventory entries.
 
 Columns:
 
@@ -34,7 +60,7 @@ web,Green
 
 ### 2. Address objects
 
-The `data/addresses.csv` file supports SCM address entries with the following fields:
+The `data/objects/addresses.csv` file supports SCM address entries with the following fields:
 
 - `name`
 - `kind`
@@ -61,7 +87,7 @@ corp-vpn-gateway,fqdn,vpn-gateway.example.com,VPN gateway endpoint,
 
 ### 2. Address groups
 
-The `data/address_groups.csv` file defines static groups of address objects.
+The `data/object_groups/address_groups.csv` file defines static groups of address objects.
 
 Columns:
 
@@ -78,7 +104,7 @@ corp-web-tier,Production web tier members,"corp-dmz-web-01,corp-dmz-web-02,corp-
 
 ### 3. Service objects
 
-The `data/services.csv` file creates SCM service objects. Supported service entries are built as protocol-specific objects with a single port value.
+The `data/services/services.csv` file creates SCM service objects. Supported service entries are built as protocol-specific objects with a single port value.
 
 Columns:
 
@@ -102,7 +128,7 @@ corp-ldap-udp,udp,389,LDAP directory access
 
 ### 4. Service groups
 
-The `data/service_groups.csv` file defines static groups of service objects.
+The `data/service_groups/service_groups.csv` file defines static groups of service objects.
 
 Columns:
 
@@ -116,17 +142,69 @@ name,members
 corp-web-services,"corp-web-https,corp-web-http"
 ```
 
+### 5. Folder-scoped security rules
+
+The project also supports SCM security rules loaded from CSV files under `data/security policies`. Rules are grouped by folder and by rule position, with one pair of files per SCM folder:
+
+- `Global_pre-rules.csv`
+- `Global_post-rules.csv`
+- `All_pre-rules.csv`
+- `All_post-rules.csv`
+- `FNM_pre-rules.csv`
+- `FNM_post-rules.csv`
+- `Lab_pre-rules.csv`
+- `Lab_post-rules.csv`
+
+The file naming convention is intentionally `Folder_pre-rules.csv` and `Folder_post-rules.csv`, which makes it easier to match each CSV to the SCM folder directly.
+
+Required columns for each rule row are:
+
+- `name`
+- `description`
+- `action`
+- `from` (source zone; also accepts `source zone`)
+- `to` (destination zone; also accepts `destination zone`)
+- `source` (source addresses; also accepts `source addresses`)
+- `destination` (destination addresses; also accepts `destination addresses`)
+- `category` (rule category, for example `any` or a valid SCM category reference)
+- `application`
+- `service` (use an SCM service object name like `corp-ssh`, not a raw keyword such as `ssh`)
+- `source_user` (source users; also accepts `source users`)
+- `log_end`
+- `disabled`
+- `URL Category` (maps to the SCM API `category` array; use a valid URL category string such as `any` or a tenant-approved category name)
+
+Optional columns supported for ordering and CSV compatibility:
+
+- `relative_position`
+- `target_rule`
+- `policy_type`
+- `url_category`
+- `profile_group`
+
+These fields are accepted in the CSV layer for tenant readability, but the simplified security-rule model currently maps the provider-backed values to the core object attributes (`from`, `to`, `source`, `destination`, `application`, `service`, and `source_user`). If you need the nested SCM URL-category or profile-object schema, that should be modeled as a dedicated provider-object expansion in a follow-up change.
+
+Example:
+
+```csv
+name,description,action,from,to,source,destination,application,service,source_user,url_category,profile_group,log_end,disabled
+allow-web-traffic,Allow HTTPS and DNS from trust to untrust,trust,untrust,any,corp-web-tier,web-browsing,dns,any,any,default-profile,true,false
+```
+
+Rules are processed by the folder name encoded in the file itself; the `folder` variable remains for the object inventory layer, while `*_prerules.csv` and `*_postrules.csv` define the policy scope.
+
 ## Administrator accounts
 
 This project no longer includes the administrator module or the Terraform-local-user flow. The administrator management path has been removed from the active project because the SCM admin model exposed by the API is not represented correctly in the provider/resource surface used here.
 
-The supported automation in this repo is intentionally limited to inventory objects and services:
+The supported automation in this repo includes the working inventory objects plus folder-aware security rule imports:
 
 - tags
 - address objects
 - address groups
 - service objects
 - service groups
+- security rules by folder and pre/post position
 
 If you need SCM admin creation, treat it as a separate manual or API-only workflow outside this Terraform inventory project.
 
@@ -179,10 +257,14 @@ terraform apply
 
 ## Files you will usually edit
 
-- `data/addresses.csv` — address objects
-- `data/address_groups.csv` — address group membership
-- `data/services.csv` — service objects
-- `data/service_groups.csv` — service group membership
+- `data/objects/addresses.csv` — address objects
+- `data/objects/tags.csv` — tag objects
+- `data/object_groups/address_groups.csv` — address group membership
+- `data/services/services.csv` — service objects
+- `data/service_groups/service_groups.csv` — service group membership
+- `data/security policies/Global/pre-rules.csv` and `data/security policies/Global/post-rules.csv` — security rules for the Global folder
+- `data/security policies/Global/All/pre-rules.csv` and `data/security policies/Global/All/post-rules.csv` — security rules for the All folder nested under Global
+- `data/security policies/Global/FNM/LAB/pre-rules.csv` and `data/security policies/Global/FNM/LAB/post-rules.csv` — security rules for the nested LAB folder under FNM
 - `terraform.tfvars` — SCM credentials and folder name
 
 ## Notes

@@ -1,0 +1,3 @@
+name,description,action,from,to,source,destination,category,application,service,source_user,URL Category,profile_group,log_end,disabled
+#default-deny-lab,Default deny action for the Lab folder,deny,any,any,any,any,any,any,any,any,any,best-practice,true,false
+allow-lab-fnm-ops,Allow operations traffic in the LAB folder,allow,ELAN,WAN,N-10.1.10.0_24,any,any,"web-browsing,ssl",application-default,any,financial-services,best-practice,true,false

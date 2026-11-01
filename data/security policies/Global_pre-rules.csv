@@ -1,0 +1,2 @@
+name,description,action,from,to,source,destination,category,application,service,source_user,URL Category,profile_group,log_end,disabled
+#allow-global-internal,Allow management traffic in the Global folder,allow,trust,management,corp-admin-subnet,corp-mgmt-servers,any,any,any,any,any,best-practice,true,false

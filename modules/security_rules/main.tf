@@ -23,10 +23,15 @@ resource "scm_security_rule" "this" {
   to          = each.value.to
   source      = each.value.source
   destination = each.value.destination
-  category    = each.value.category
+  category    = length(each.value.url_category) > 0 ? each.value.url_category : each.value.category
   application = each.value.application
   service     = each.value.service
   source_user = each.value.source_user
-  log_end     = each.value.log_end
-  disabled    = try(each.value.disabled, false)
+
+  profile_setting = each.value.profile_group == null || trimspace(each.value.profile_group) == "" ? null : {
+    group = [each.value.profile_group]
+  }
+
+  log_end  = each.value.log_end
+  disabled = try(each.value.disabled, false)
 }

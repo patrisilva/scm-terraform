@@ -1,0 +1,2 @@
+name,description,action,from,to,source,destination,category,application,service,source_user,URL Category,profile_group,log_end,disabled
+allow-fnm-ops,Allow operations traffic in the FNM folder,allow,ELAN,WAN,N-10.1.10.0_24,any,any,ssh,application-default,any,financial-services,best-practice,true,false
