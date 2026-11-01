@@ -1,0 +1,2 @@
+name,description,action,position,relative_position,target_rule,from,to,source,destination,category,application,service,source_user,log_end,disabled,policy_type
+allow-internal-web,Allow web access from untrusted to trusted,allow,pre,,,untrust,trust,any,tf-demo-address-group,any,web-browsing,tf-demo-service-tcp,any,true,false,Security

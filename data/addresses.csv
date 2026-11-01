@@ -1,0 +1,7 @@
+name,kind,value,description,tags
+corp-dmz-web-01,ip_netmask,10.20.10.11/32,Production DMZ web frontend,"prod,dmz,web"
+corp-dmz-web-02,ip_netmask,10.20.10.12/32,Production DMZ web frontend,"prod,dmz,web"
+corp-app-01,ip_netmask,10.20.20.11/32,Production application server,"prod,app"
+corp-db-01,ip_netmask,10.20.30.11/32,Production database primary,"prod,db"
+corp-branch-01,ip_range,10.20.100.10-10.20.100.50,Branch office user subnet,
+corp-vpn-gateway,fqdn,vpn-gateway.example.com,VPN gateway endpoint,

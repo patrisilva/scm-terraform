@@ -1,0 +1,6 @@
+name,protocol,port,description
+corp-web-https,tcp,443,HTTPS web service
+corp-web-http,tcp,80,HTTP web service
+corp-ldap-udp,udp,389,LDAP directory access
+corp-ssh,tcp,22,Administrative SSH access
+corp-dns-udp,udp,53,Internal DNS service

@@ -1,0 +1,7 @@
+# Copy this file to terraform.tfvars and replace the values.
+# Keep this file out of source control if it contains secrets.
+scm_host = "api.sase.paloaltonetworks.com"
+client_id = "<your-client-id>"
+client_secret = "<your-client-secret>"
+tsg_id = "<your-tsg-id>"
+folder = "All"

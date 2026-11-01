@@ -1,0 +1,4 @@
+name,description,members
+corp-web-tier,Production web tier members,"corp-dmz-web-01,corp-dmz-web-02,corp-app-01"
+corp-data-tier,Production data tier members,"corp-db-01"
+corp-branch-range,Branch office address range,"corp-branch-01"

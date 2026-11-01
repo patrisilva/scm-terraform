@@ -1,0 +1,9 @@
+## pan dev terraform intro 
+https://pan.dev/terraform/docs/scm/getting-started/introduction/
+
+
+## Terraform providers
+https://registry.terraform.io/providers/PaloAltoNetworks/panos/latest/docs
+
+## strata cloud manager (SCM)
+https://pan.dev/strata-cloud-manager/

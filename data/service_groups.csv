@@ -1,0 +1,4 @@
+name,members
+corp-web-services,"corp-web-https,corp-web-http"
+corp-identity-services,"corp-ldap-udp,corp-ssh"
+corp-dns-services,"corp-dns-udp"
