@@ -30,11 +30,11 @@ data/
     All_post-rules.csv
     FNM_pre-rules.csv
     FNM_post-rules.csv
-    Lab_pre-rules.csv
-    Lab_post-rules.csv
+    LAB_pre-rules.csv
+    LAB_post-rules.csv
 ```
 
-This keeps the rule files aligned to the actual tenant folders: Global, All, FNM, and Lab, while keeping inventory objects grouped by type.
+This keeps the rule files aligned to the actual tenant folders: `Global`, `All`, `FNM`, and `LAB`. In the SCM provider, `Global` is not a valid security-rule folder value; the rule loader maps it to `All` for policy creation while keeping the CSV file names readable and tenant-native.
 
 ## Supported object types
 
@@ -174,6 +174,8 @@ Required columns for each rule row are:
 - `disabled`
 - `URL Category` (maps to the SCM API `category` array; use a valid URL category string such as `any` or a tenant-approved category name)
 
+The CSV layer supports multiple values in the list-based fields. `from`, `to`, `source`, `destination`, `application`, `service`, `source_user`, and `URL Category` all accept comma-separated values in a single CSV cell, and the Terraform conversion logic splits them into SCM lists before creating the rule.
+
 Optional columns supported for ordering and CSV compatibility:
 
 - `relative_position`
@@ -182,16 +184,17 @@ Optional columns supported for ordering and CSV compatibility:
 - `url_category`
 - `profile_group`
 
-These fields are accepted in the CSV layer for tenant readability, but the simplified security-rule model currently maps the provider-backed values to the core object attributes (`from`, `to`, `source`, `destination`, `application`, `service`, and `source_user`). If you need the nested SCM URL-category or profile-object schema, that should be modeled as a dedicated provider-object expansion in a follow-up change.
+The rule builder maps the CSV data into the provider-supported list fields and profile setting structure used by the SCM security-rule resource.
 
 Example:
 
 ```csv
-name,description,action,from,to,source,destination,application,service,source_user,url_category,profile_group,log_end,disabled
-allow-web-traffic,Allow HTTPS and DNS from trust to untrust,trust,untrust,any,corp-web-tier,web-browsing,dns,any,any,default-profile,true,false
+name,description,action,from,to,source,destination,application,service,source_user,URL Category,profile_group,log_end,disabled
+allow-web-traffic,Allow HTTPS and DNS from trust to untrust,trust,untrust,corp-web-tier,corp-web-tier,web-browsing,dns,any,financial-services,best-practice,true,false
+allow-lab-fnm-ops,Allow lab traffic in the LAB folder,ELAN,WAN,N-10.1.10.0_24,any,"web-browsing,ssl",application-default,any,financial-services,best-practice,true,false
 ```
 
-Rules are processed by the folder name encoded in the file itself; the `folder` variable remains for the object inventory layer, while `*_prerules.csv` and `*_postrules.csv` define the policy scope.
+Rules are processed by the folder name encoded in the file itself; the `folder` variable remains for the object inventory layer, while `*_pre-rules.csv` and `*_post-rules.csv` define the policy scope.
 
 ## Administrator accounts
 
